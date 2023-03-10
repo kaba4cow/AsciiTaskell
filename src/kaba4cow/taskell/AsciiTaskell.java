@@ -1,4 +1,4 @@
-package kaba4cow.asciitaskell;
+package kaba4cow.taskell;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -11,7 +11,6 @@ import kaba4cow.ascii.drawing.drawers.Drawer;
 import kaba4cow.ascii.input.Keyboard;
 import kaba4cow.ascii.input.Mouse;
 import kaba4cow.ascii.toolbox.maths.Maths;
-import kaba4cow.taskell.Command;
 
 public class AsciiTaskell implements MainProgram {
 
@@ -47,7 +46,7 @@ public class AsciiTaskell implements MainProgram {
 
 		builder = new StringBuilder();
 		Command.processCommand("");
-		output = "TASKELL" + Command.getOutput();
+		output = "TASKELL by kaba4cow" + Command.getOutput();
 	}
 
 	@Override
