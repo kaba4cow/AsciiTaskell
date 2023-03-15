@@ -10,6 +10,7 @@ import kaba4cow.ascii.core.Engine;
 import kaba4cow.ascii.drawing.drawers.Drawer;
 import kaba4cow.ascii.input.Keyboard;
 import kaba4cow.ascii.input.Mouse;
+import kaba4cow.ascii.toolbox.Colors;
 import kaba4cow.ascii.toolbox.maths.Maths;
 
 public class AsciiTaskell implements MainProgram {
@@ -28,6 +29,8 @@ public class AsciiTaskell implements MainProgram {
 	private int scroll;
 	private int newScroll;
 	private int maxScroll;
+
+	private int color = 0x000FFF;
 
 	public AsciiTaskell() {
 
@@ -96,6 +99,9 @@ public class AsciiTaskell implements MainProgram {
 
 	@Override
 	public void render() {
+		color = Colors.combine(Command.getBackgroundColor(), Command.getForegroundColor());
+		Display.setBackground(' ', color);
+
 		int x = 0;
 		int y = 0;
 		for (int i = 0; i < output.length(); i++) {
@@ -106,7 +112,7 @@ public class AsciiTaskell implements MainProgram {
 			} else if (c == '\t')
 				x += 4;
 			else
-				Drawer.drawChar(x++, y - scroll, c, 0x000FFF);
+				Drawer.drawChar(x++, y - scroll, c, color);
 
 			if (x >= Display.getWidth()) {
 				x = 0;
@@ -116,7 +122,7 @@ public class AsciiTaskell implements MainProgram {
 
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
-			Drawer.drawChar(x++, y - scroll, c, 0x000AFC);
+			Drawer.drawChar(x++, y - scroll, c, color);
 
 			if (x >= Display.getWidth()) {
 				x = 0;
