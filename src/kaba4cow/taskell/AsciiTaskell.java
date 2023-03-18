@@ -11,7 +11,6 @@ import kaba4cow.ascii.drawing.drawers.Drawer;
 import kaba4cow.ascii.input.Keyboard;
 import kaba4cow.ascii.input.Mouse;
 import kaba4cow.ascii.toolbox.Colors;
-import kaba4cow.ascii.toolbox.maths.Maths;
 
 public class AsciiTaskell implements MainProgram {
 
@@ -27,7 +26,6 @@ public class AsciiTaskell implements MainProgram {
 	private String text;
 
 	private int scroll;
-	private int newScroll;
 	private int maxScroll;
 
 	private int color = 0x000FFF;
@@ -39,7 +37,6 @@ public class AsciiTaskell implements MainProgram {
 	@Override
 	public void init() {
 		scroll = 0;
-		newScroll = 0;
 		maxScroll = 0;
 
 		text = "";
@@ -54,10 +51,15 @@ public class AsciiTaskell implements MainProgram {
 
 	@Override
 	public void update(float dt) {
-		newScroll = scroll - 2 * Mouse.getScroll();
+		scroll -= 2 * Mouse.getScroll();
+		if (scroll < 0)
+			scroll = 0;
+		if (scroll > maxScroll)
+			scroll = maxScroll;
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_ENTER)) {
-			newScroll = maxScroll + 256;
+			scroll = Integer.MAX_VALUE;
+			maxScroll = Integer.MAX_VALUE;
 			if (Command.processCommand(text))
 				Engine.requestClose();
 			else
@@ -103,7 +105,7 @@ public class AsciiTaskell implements MainProgram {
 		Display.setBackground(' ', color);
 
 		int x = 0;
-		int y = 0;
+		int y = -scroll;
 		for (int i = 0; i < output.length(); i++) {
 			char c = output.charAt(i);
 			if (c == '\n') {
@@ -112,7 +114,7 @@ public class AsciiTaskell implements MainProgram {
 			} else if (c == '\t')
 				x += 4;
 			else
-				Drawer.drawChar(x++, y - scroll, c, color);
+				Drawer.drawChar(x++, y, c, color);
 
 			if (x >= Display.getWidth()) {
 				x = 0;
@@ -122,7 +124,7 @@ public class AsciiTaskell implements MainProgram {
 
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
-			Drawer.drawChar(x++, y - scroll, c, color);
+			Drawer.drawChar(x++, y, c, color);
 
 			if (x >= Display.getWidth()) {
 				x = 0;
@@ -130,12 +132,11 @@ public class AsciiTaskell implements MainProgram {
 			}
 		}
 
-		maxScroll = Maths.max(0, y - Display.getHeight() + 5);
-		if (newScroll < 0)
-			newScroll = 0;
-		if (newScroll > maxScroll)
-			newScroll = maxScroll;
-		scroll = newScroll;
+		y += scroll;
+		if (y < Display.getHeight())
+			maxScroll = 0;
+		else
+			maxScroll = y + 5 - Display.getHeight();
 	}
 
 	public static void main(String[] args) {
