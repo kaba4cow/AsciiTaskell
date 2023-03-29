@@ -76,7 +76,7 @@ public class Project {
 
 	public boolean save(String path) {
 		String string = "";
-		if (!description.isBlank())
+		if (!description.isEmpty())
 			string += "d " + description + "\n";
 		for (Task task : tasks) {
 			switch (task.getStatus()) {
